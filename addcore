@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -euo pipefail
+
+file=$(basename $1)
+
+indexout=$(echo -n "$(date +%Y-%m-%d)" \
+"$(crc32 $file)" \
+"$(echo $file.zip)")
+
+zip "$file.zip" $file
+sed -i /$file.zip/d .index-extended
+echo "$indexout" >> .index-extended
+sed -i /$file.zip/d .index
+echo "$file.zip" >> .index
+
+rm $file
